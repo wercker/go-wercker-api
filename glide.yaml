@@ -1,0 +1,5 @@
+package: github.com/wercker/go-wercker-api
+import:
+  - package: github.com/jtacoma/uritemplates
+  - package: github.com/codegangsta/cli
+  - package: github.com/stretchr/testify

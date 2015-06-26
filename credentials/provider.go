@@ -10,6 +10,14 @@ type Creds struct {
 	Password string
 }
 
-// func AnonymousCreds() *Creds {
-// 	return &Creds{}
-// }
+func Anonymous() Provider {
+	return &StaticProvider{}
+}
+
+func Token(token string) Provider {
+	return &StaticProvider{Token: token}
+}
+
+func UsernamePassword(username string, password string) Provider {
+	return &StaticProvider{Username: username, Password: password}
+}

@@ -29,12 +29,15 @@ client := wercker.NewClient(options)
 
 ## Authentication
 
-By default this client tries to fetch the credentials from
-`~/.wercker/credentials`, the environment variable `$WERCKER_TOKEN` and falls
-back to anonymous user.
+The client uses a `Provider` to get the credentials for the user. By default it
+uses the following strategy:
+
+- Retrieve the token from the environment variable`$WERCKER_TOKEN`
+- Retrieve the token from file `~/.wercker/credentials`
+- Fallback to anonymous user
 
 If you retrieved your wercker token through other means, then you can use the
-`credentials.Token` method to pass this value:
+`credentials.Token` method to user a static `Provider`:
 
 ```golang
 import "github.com/wercker/go-wercker-api"

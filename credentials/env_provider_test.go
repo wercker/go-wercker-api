@@ -1,6 +1,7 @@
 package credentials
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -8,6 +9,9 @@ import (
 )
 
 func TestEnvProviderAssignable(t *testing.T) {
+
+	fmt.Println("testing!")
+
 	var provider interface{}
 	provider = &EnvProvider{}
 

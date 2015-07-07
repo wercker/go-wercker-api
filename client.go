@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/jtacoma/uritemplates"
 )
 
 func NewClient(options *Options) *Client {
@@ -32,21 +34,21 @@ func (c *Client) generateUrl(path string) string {
 	return endpoint + path
 }
 
-func (c *Client) MakeRequest(method string, path string, result interface{}) error {
+func (c *Client) MakeRequest(method string, path string) ([]byte, error) {
 	client := &http.Client{}
 
 	url := c.generateUrl(path)
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if c.options.Creds != nil {
 		// Add credentials
 		creds, err := c.options.Creds.GetCredentials()
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		if creds.Token != "" {
@@ -60,28 +62,27 @@ func (c *Client) MakeRequest(method string, path string, result interface{}) err
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	fmt.Printf("Going to call %d", resp.StatusCode)
+
 	if resp.StatusCode >= 200 && resp.StatusCode < 400 {
-		if resp.ContentLength > 0 && result != nil {
+
+		if resp.ContentLength > 0 {
 			body, err := ioutil.ReadAll(resp.Body)
 			defer resp.Body.Close()
 
-			// Continue if we were able to read the response
-			if err == nil {
-				err := json.Unmarshal(body, result)
-
-				// Return an error if we were unable to unmarshal
-				if err != nil {
-					return err
-				}
+			if err != nil {
+				return nil, err
 			}
+
+			return body, nil
 		}
-		return nil
+		return nil, nil
 	}
 
-	return c.handleError(resp)
+	return nil, c.handleError(resp)
 }
 
 func (c *Client) handleError(resp *http.Response) error {
@@ -102,4 +103,28 @@ func (c *Client) handleError(resp *http.Response) error {
 	}
 
 	return errors.New("Invalid status code received")
+}
+
+func (c *Client) makeRequest(method string, template *uritemplates.UriTemplate, urlModel map[string]interface{}, payload interface{}, headers map[string]string, options *Options, result interface{}) error {
+	path, err := template.Expand(urlModel)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Going to call %s", path)
+
+	body, err := c.MakeRequest(method, path)
+
+	// Continue if we were able to read the response
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(body, result)
+
+	// Return an error if we were unable to unmarshal
+	if err != nil {
+		return err
+	}
+	return nil
 }

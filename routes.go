@@ -7,6 +7,7 @@ var routes map[string]*uritemplates.UriTemplate = make(map[string]*uritemplates.
 
 func init() {
 	// Add templates to the route map
+	addURITemplate("Build.GetBuild", "/api/v3/builds{/buildID}")
 	addURITemplate("GetBuilds", "/api/v3/applications{/username,name}/builds{?commit,branch,status,limit,skip,sort,result}")
 }
 

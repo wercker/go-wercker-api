@@ -6,3 +6,5 @@ type Options struct {
 	Creds    credentials.Provider
 	Endpoint string
 }
+
+// default options < client options < function options

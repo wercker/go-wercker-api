@@ -1,50 +1,149 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/codegangsta/cli"
 	"github.com/wercker/go-wercker-api"
-	"github.com/wercker/go-wercker-api/credentials"
 )
 
 var (
-	applicationsCommand = cli.Command{
+	buildsCommand = cli.Command{
 		Name:  "builds",
-		Usage: "builds related endpoints",
-
+		Usage: "build related endpoints",
 		Subcommands: []cli.Command{
 			cli.Command{
 				Name:  "fetch",
 				Usage: "retrieve a single build",
-				Action: func(c *cli.Context) {
-
-					endpoint := c.GlobalString("endpoint")
-					options := wercker.Options{
-						Endpoint: endpoint,
+				Action: wrapper(func(c *cli.Context, client *wercker.Client) (interface{}, error) {
+					buildID := c.Args().First()
+					if buildID == "" {
+						return nil, fmt.Errorf("build id is required as an argument")
 					}
-
-					token := c.GlobalString("token")
-					if token != "" {
-						options.Creds = credentials.Token(token)
-					}
-					client := wercker.NewClient(&options)
 
 					getBuildOptions := &wercker.GetBuildOptions{
-						BuildID: "123",
+						BuildID: buildID,
 					}
 
-					result, err := client.GetBuild(getBuildOptions)
-					if err != nil {
-						panic(err)
+					return client.GetBuild(getBuildOptions)
+				}),
+			},
+		},
+	}
+	applicationsCommand = cli.Command{
+		Name:  "applications",
+		Usage: "application related endpoints",
+		Subcommands: []cli.Command{
+			cli.Command{
+				Name:  "fetch",
+				Usage: "retrieve a single application",
+				Action: wrapper(func(c *cli.Context, client *wercker.Client) (interface{}, error) {
+					owner := c.Args().First()
+					name := c.Args().Get(1)
+
+					if owner == "" {
+						return nil, fmt.Errorf("owner is required as the first argument")
 					}
-					fmt.Printf("result: %v", result)
+
+					if name == "" {
+						s := strings.SplitN(owner, "/", 2)
+						if len(s) != 2 {
+							return nil, fmt.Errorf("application name is required as the second argument")
+						}
+						owner = s[0]
+						name = s[1]
+					}
+
+					getApplicationOptions := &wercker.GetApplicationOptions{
+						Owner: owner,
+						Name:  name,
+					}
+
+					return client.GetApplication(getApplicationOptions)
+				}),
+			},
+			cli.Command{
+				Name:  "builds",
+				Usage: "retrieves the builds for an application",
+				Flags: []cli.Flag{
+					cli.StringFlag{Name: "branch"},
+					cli.StringFlag{Name: "commit"},
+					cli.StringFlag{Name: "limit"},
+					cli.StringFlag{Name: "result"},
+					cli.StringFlag{Name: "skip"},
+					cli.StringFlag{Name: "sort"},
+					cli.StringFlag{Name: "stack"},
+					cli.StringFlag{Name: "status"},
 				},
+				Action: wrapper(func(c *cli.Context, client *wercker.Client) (interface{}, error) {
+					owner := c.Args().First()
+					name := c.Args().Get(1)
+
+					if owner == "" {
+						return nil, fmt.Errorf("owner is required as the first argument")
+					}
+
+					if name == "" {
+						s := strings.SplitN(owner, "/", 2)
+						if len(s) != 2 {
+							return nil, fmt.Errorf("application name is required as the second argument")
+						}
+						owner = s[0]
+						name = s[1]
+					}
+
+					getApplicationBuildsOptions := &wercker.GetApplicationBuildsOptions{
+						Owner:  owner,
+						Name:   name,
+						Branch: c.String("branch"),
+						Commit: c.String("commit"),
+						Limit:  c.String("limit"),
+						Result: c.String("result"),
+						Skip:   c.String("skip"),
+						Sort:   c.String("sort"),
+						Stack:  c.String("stack"),
+						Status: c.String("status"),
+					}
+
+					return client.GetApplicationBuilds(getApplicationBuildsOptions)
+				}),
 			},
 		},
 	}
 )
+
+func wrapper(f func(c *cli.Context, client *wercker.Client) (interface{}, error)) func(c *cli.Context) {
+	return func(c *cli.Context) {
+		client := createClient(c)
+
+		result, err := f(c, client)
+		if err != nil {
+			panic(err)
+		}
+
+		b, err := json.MarshalIndent(result, "", "  ")
+		if err != nil {
+			panic(err)
+		}
+
+		os.Stdout.Write(b)
+		os.Stdout.WriteString("\n")
+	}
+}
+
+func createClient(c *cli.Context) *wercker.Client {
+	endpoint := c.GlobalString("endpoint")
+	options := &wercker.Options{
+		Endpoint: endpoint,
+	}
+
+	client := wercker.NewClient(options)
+
+	return client
+}
 
 func main() {
 	app := cli.NewApp()
@@ -70,6 +169,7 @@ func main() {
 	}
 	app.Commands = []cli.Command{
 		applicationsCommand,
+		buildsCommand,
 	}
 
 	app.Run(os.Args)

@@ -12,7 +12,9 @@ import (
 )
 
 func NewClient(options *Options) *Client {
-	return &Client{options: options}
+	return &Client{
+		options: defaultOptions.Merge(options),
+	}
 }
 
 type Client struct {
@@ -35,7 +37,7 @@ func (c *Client) generateUrl(path string) string {
 }
 
 func (c *Client) MakeRequest(method string, path string) ([]byte, error) {
-	client := &http.Client{}
+	client := http.DefaultClient
 
 	url := c.generateUrl(path)
 
@@ -65,11 +67,8 @@ func (c *Client) MakeRequest(method string, path string) ([]byte, error) {
 		return nil, err
 	}
 
-	fmt.Printf("Going to call %d", resp.StatusCode)
-
 	if resp.StatusCode >= 200 && resp.StatusCode < 400 {
-
-		if resp.ContentLength > 0 {
+		if resp.ContentLength != 0 {
 			body, err := ioutil.ReadAll(resp.Body)
 			defer resp.Body.Close()
 
@@ -105,26 +104,23 @@ func (c *Client) handleError(resp *http.Response) error {
 	return errors.New("Invalid status code received")
 }
 
-func (c *Client) makeRequest(method string, template *uritemplates.UriTemplate, urlModel map[string]interface{}, payload interface{}, headers map[string]string, options *Options, result interface{}) error {
+func (c *Client) makeRequest(method string, template *uritemplates.UriTemplate, urlModel interface{}, payload interface{}, headers map[string]string, options *Options, result interface{}) error {
 	path, err := template.Expand(urlModel)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Going to call %s", path)
+	fmt.Printf("path: %s\n", path)
 
 	body, err := c.MakeRequest(method, path)
-
-	// Continue if we were able to read the response
 	if err != nil {
 		return err
 	}
 
 	err = json.Unmarshal(body, result)
-
-	// Return an error if we were unable to unmarshal
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

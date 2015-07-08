@@ -11,14 +11,14 @@ import (
 	"github.com/jtacoma/uritemplates"
 )
 
-func NewClient(options *Options) *Client {
+func NewClient(config *Config) *Client {
 	return &Client{
-		options: defaultOptions.Merge(options),
+		config: defaultConfig.Merge(config),
 	}
 }
 
 type Client struct {
-	options *Options
+	config *Config
 }
 
 type ErrResponse struct {
@@ -32,7 +32,7 @@ func (e *ErrResponse) Error() string {
 }
 
 func (c *Client) generateUrl(path string) string {
-	endpoint := strings.TrimRight(c.options.Endpoint, "/")
+	endpoint := strings.TrimRight(c.config.Endpoint, "/")
 	return endpoint + path
 }
 
@@ -46,9 +46,9 @@ func (c *Client) MakeRequest(method string, path string) ([]byte, error) {
 		return nil, err
 	}
 
-	if c.options.Creds != nil {
+	if c.config.Creds != nil {
 		// Add credentials
-		creds, err := c.options.Creds.GetCredentials()
+		creds, err := c.config.Creds.GetCredentials()
 		if err != nil {
 			return nil, err
 		}
@@ -104,7 +104,7 @@ func (c *Client) handleError(resp *http.Response) error {
 	return errors.New("Invalid status code received")
 }
 
-func (c *Client) makeRequest(method string, template *uritemplates.UriTemplate, urlModel interface{}, payload interface{}, headers map[string]string, options *Options, result interface{}) error {
+func (c *Client) makeRequest(method string, template *uritemplates.UriTemplate, urlModel interface{}, payload interface{}, headers map[string]string, config *Config, result interface{}) error {
 	m, ok := struct2map(urlModel)
 	if !ok {
 		return errors.New("Invalid URL model")

@@ -1,7 +1,9 @@
 package wercker
 
 type GetApplicationOptions struct {
-	*Options
+	Config *Config
+
+	// Required
 	Owner string
 	Name  string
 }
@@ -14,7 +16,7 @@ func (c *Client) GetApplication(options *GetApplicationOptions) (*Application, e
 	var headers map[string]string = nil
 	result := &Application{}
 
-	err := c.makeRequest(method, template, options, payload, headers, options.Options, result)
+	err := c.makeRequest(method, template, options, payload, headers, options.Config, result)
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +25,7 @@ func (c *Client) GetApplication(options *GetApplicationOptions) (*Application, e
 }
 
 type FetchApplicationBuildsOptions struct {
-	Options *Options `map:"-"`
+	Config *Config `map:"-"`
 
 	// Required
 	Owner string `map:"owner"`
@@ -48,7 +50,7 @@ func (c *Client) FetchApplicationBuilds(options *FetchApplicationBuildsOptions) 
 	var headers map[string]string = nil
 	result := []*BuildSummary{}
 
-	err := c.makeRequest(method, template, options, payload, headers, options.Options, &result)
+	err := c.makeRequest(method, template, options, payload, headers, options.Config, &result)
 	if err != nil {
 		return nil, err
 	}

@@ -142,11 +142,11 @@ func wrapper(f func(c *cli.Context, client *wercker.Client) (interface{}, error)
 
 func createClient(c *cli.Context) *wercker.Client {
 	endpoint := c.GlobalString("endpoint")
-	options := &wercker.Options{
+	config := &wercker.Config{
 		Endpoint: endpoint,
 	}
 
-	client := wercker.NewClient(options)
+	client := wercker.NewClient(config)
 
 	return client
 }

@@ -8,19 +8,19 @@ func init() {
 }
 
 type CreateTokenOptions struct {
-	*Options
+	Config *Config
 }
 type GetTokenOptions struct {
-	*Options
+	Config *Config
 }
 type FetchTokenOptions struct {
-	*Options
+	Config *Config
 }
 type UpdateTokenOptions struct {
-	*Options
+	Config *Config
 }
 type DeleteTokenOptions struct {
-	*Options
+	Config *Config
 }
 
 func (c *Client) CreateToken(options *CreateTokenOptions) (*Token, error) {

@@ -1,7 +1,7 @@
 package wercker
 
 type GetBuildOptions struct {
-	*Options
+	Config  *Config
 	BuildID string
 }
 
@@ -13,7 +13,7 @@ func (c *Client) GetBuild(options *GetBuildOptions) (*Build, error) {
 	var headers map[string]string = nil
 	result := &Build{}
 
-	err := c.makeRequest(method, template, options, payload, headers, options.Options, result)
+	err := c.makeRequest(method, template, options, payload, headers, options.Config, result)
 	if err != nil {
 		return nil, err
 	}

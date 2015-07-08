@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/codegangsta/cli"
-	"github.com/wercker/go-wercker-api"
+	wercker "github.com/wercker/go-wercker-api"
 )
 
 var (
@@ -95,7 +95,7 @@ var (
 						name = s[1]
 					}
 
-					getApplicationBuildsOptions := &wercker.GetApplicationBuildsOptions{
+					fetchApplicationBuildsOptions := &wercker.FetchApplicationBuildsOptions{
 						Owner:  owner,
 						Name:   name,
 						Branch: c.String("branch"),
@@ -108,7 +108,7 @@ var (
 						Status: c.String("status"),
 					}
 
-					return client.GetApplicationBuilds(getApplicationBuildsOptions)
+					return client.FetchApplicationBuilds(fetchApplicationBuildsOptions)
 				}),
 			},
 		},
@@ -121,12 +121,18 @@ func wrapper(f func(c *cli.Context, client *wercker.Client) (interface{}, error)
 
 		result, err := f(c, client)
 		if err != nil {
-			panic(err)
+			os.Stderr.WriteString("Unable to fetch from the API: ")
+			os.Stderr.WriteString(err.Error())
+			os.Stderr.WriteString("\n")
+			return
 		}
 
 		b, err := json.MarshalIndent(result, "", "  ")
 		if err != nil {
-			panic(err)
+			os.Stderr.WriteString("Unable to marshal response from the API: ")
+			os.Stderr.WriteString(err.Error())
+			os.Stderr.WriteString("\n")
+			return
 		}
 
 		os.Stdout.Write(b)
@@ -150,7 +156,7 @@ func main() {
 
 	app.Author = "wercker"
 	app.Email = "pleasemailus@wercker.com"
-	app.Name = "api-client"
+	app.Name = "api explorer"
 	app.Usage = "A new cli application"
 	app.Version = FullVersion()
 
@@ -164,7 +170,7 @@ func main() {
 		cli.StringFlag{
 			Name:  "token",
 			Value: "https://app.wercker.com",
-			Usage: "Base url for the wercker app.",
+			Usage: "Token used for authentication (leave empty to use default SDK strategy)",
 		},
 	}
 	app.Commands = []cli.Command{

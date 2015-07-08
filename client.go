@@ -105,12 +105,15 @@ func (c *Client) handleError(resp *http.Response) error {
 }
 
 func (c *Client) makeRequest(method string, template *uritemplates.UriTemplate, urlModel interface{}, payload interface{}, headers map[string]string, options *Options, result interface{}) error {
-	path, err := template.Expand(urlModel)
+	m, ok := struct2map(urlModel)
+	if !ok {
+		return errors.New("Invalid URL model")
+	}
+
+	path, err := template.Expand(m)
 	if err != nil {
 		return err
 	}
-
-	fmt.Printf("path: %s\n", path)
 
 	body, err := c.MakeRequest(method, path)
 	if err != nil {

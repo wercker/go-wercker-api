@@ -22,27 +22,27 @@ func (c *Client) GetApplication(options *GetApplicationOptions) (*Application, e
 	return result, nil
 }
 
-type GetApplicationBuildsOptions struct {
-	*Options
+type FetchApplicationBuildsOptions struct {
+	Options *Options `map:"-"`
 
 	// Required
-	Owner string
-	Name  string
+	Owner string `map:"owner"`
+	Name  string `map:"name"`
 
 	// Optional
-	Branch string `uri:"branch,omitempty"`
-	Commit string `uri:"commit,omitempty"`
-	Limit  string `uri:"limit,omitempty"`
-	Result string `uri:"result,omitempty"`
-	Skip   string `uri:"skip,omitempty"`
-	Sort   string `uri:"sort,omitempty"`
-	Stack  string `uri:"stack,omitempty"`
-	Status string `uri:"status,omitempty"`
+	Branch string `map:"branch,omitempty"`
+	Commit string `map:"commit,omitempty"`
+	Limit  string `map:"limit,omitempty"`
+	Result string `map:"result,omitempty"`
+	Skip   string `map:"skip,omitempty"`
+	Sort   string `map:"sort,omitempty"`
+	Stack  string `map:"stack,omitempty"`
+	Status string `map:"status,omitempty"`
 }
 
-func (c *Client) GetApplicationBuilds(options *GetApplicationBuildsOptions) ([]*BuildSummary, error) {
+func (c *Client) FetchApplicationBuilds(options *FetchApplicationBuildsOptions) ([]*BuildSummary, error) {
 	method := "GET"
-	template := routes["applications.GetApplicationBuilds"]
+	template := routes["applications.FetchApplicationBuilds"]
 
 	var payload interface{} = nil
 	var headers map[string]string = nil

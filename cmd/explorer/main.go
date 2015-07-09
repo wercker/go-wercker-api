@@ -7,7 +7,8 @@ import (
 	"strings"
 
 	"github.com/codegangsta/cli"
-	wercker "github.com/wercker/go-wercker-api"
+	"github.com/wercker/go-wercker-api"
+	"github.com/wercker/go-wercker-api/credentials"
 )
 
 var (
@@ -146,6 +147,10 @@ func createClient(c *cli.Context) *wercker.Client {
 		Endpoint: endpoint,
 	}
 
+	if c.GlobalBool("anonymous") {
+		config.Creds = credentials.Anonymous()
+	}
+
 	client := wercker.NewClient(config)
 
 	return client
@@ -171,6 +176,10 @@ func main() {
 			Name:  "token",
 			Value: "https://app.wercker.com",
 			Usage: "Token used for authentication (leave empty to use default SDK strategy)",
+		},
+		cli.BoolFlag{
+			Name:  "anonymous",
+			Usage: "Force the call to use anonymous credentials",
 		},
 	}
 	app.Commands = []cli.Command{

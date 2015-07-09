@@ -1,5 +1,7 @@
 # wercker api client
 
+[![wercker status](https://app.wercker.com/status/36462973eb9bc9dd7a0f3b9568328af6/s "wercker status")](https://app.wercker.com/project/bykey/36462973eb9bc9dd7a0f3b9568328af6)
+
 go-wercker-api is the official wercker client for the
 [wercker API][api-docs].
 

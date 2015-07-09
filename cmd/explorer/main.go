@@ -149,6 +149,11 @@ func createClient(c *cli.Context) *wercker.Client {
 
 	if c.GlobalBool("anonymous") {
 		config.Creds = credentials.Anonymous()
+	} else {
+		token := c.GlobalString("token")
+		if token != "" {
+			config.Creds = credentials.Token(token)
+		}
 	}
 
 	client := wercker.NewClient(config)
@@ -174,7 +179,7 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:  "token",
-			Value: "https://app.wercker.com",
+			Value: "",
 			Usage: "Token used for authentication (leave empty to use default SDK strategy)",
 		},
 		cli.BoolFlag{

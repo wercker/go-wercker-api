@@ -11,6 +11,8 @@ import (
 	"github.com/jtacoma/uritemplates"
 )
 
+// NewClient creates a new Client. It merges the default Config together with
+// config.
 func NewClient(config *Config) *Client {
 	c := &Client{
 		config: defaultConfig.Merge(config),
@@ -23,32 +25,38 @@ func NewClient(config *Config) *Client {
 	return c
 }
 
+// Client is the wercker api client.
 type Client struct {
-	config       *Config
+	config *Config
+
 	Applications *applicationsService
 	Builds       *buildsService
 	Tokens       *tokensService
 }
 
+// ErrResponse is a generic error object using wercker api conventions.
 type ErrResponse struct {
 	StatusCode    int    `json:"statusCode"`
 	StatusMessage string `json:"error"`
 	Message       string `json:"message"`
 }
 
+// Error returns the wercker error message
 func (e *ErrResponse) Error() string {
 	return e.Message
 }
 
-func generateUrl(path string, config *Config) string {
+func generateURL(path string, config *Config) string {
 	endpoint := strings.TrimRight(config.Endpoint, "/")
 	return endpoint + path
 }
 
+// MakeRequest makes a request to the wercker API, and returns the returned
+// payload
 func (c *Client) MakeRequest(method string, path string, override *Config) ([]byte, error) {
 	config := c.config.Merge(override)
 
-	url := generateUrl(path, config)
+	url := generateURL(path, config)
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {

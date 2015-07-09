@@ -2,6 +2,7 @@ package wercker
 
 import "time"
 
+// Build is a detailed api representation
 type Build struct {
 	ID          string              `json:"id"`
 	URL         string              `json:"url"`
@@ -17,6 +18,7 @@ type Build struct {
 	Status      string              `json:"status"`
 }
 
+// BuildSummary is a summary api representation
 type BuildSummary struct {
 	ID         string    `json:"id"`
 	URL        string    `json:"url"`
@@ -31,6 +33,7 @@ type BuildSummary struct {
 	Status     string    `json:"status"`
 }
 
+// Deploy is a detailed api representation
 type Deploy struct {
 	ID          string              `json:"id"`
 	URL         string              `json:"url"`
@@ -43,6 +46,7 @@ type Deploy struct {
 	Build       *BuildSummary       `json:"build"`
 }
 
+// DeploySummary is a summary api representation
 type DeploySummary struct {
 	ID         string    `json:"id"`
 	URL        string    `json:"url"`
@@ -53,12 +57,14 @@ type DeploySummary struct {
 	Progress   int       `json:"progress"`
 }
 
+// SCM is a detailed source control manager api representation
 type SCM struct {
 	Type       string `json:"type"`
 	Owner      string `json:"owner"`
 	Repository string `json:"repository"`
 }
 
+// Application is a detailed api representation
 type Application struct {
 	ID        string       `json:"id"`
 	URL       string       `json:"url"`
@@ -73,6 +79,7 @@ type Application struct {
 	Stack     int          `json:"stack"`
 }
 
+// ApplicationSummary is a summary api representation
 type ApplicationSummary struct {
 	ID        string       `json:"id"`
 	URL       string       `json:"url"`
@@ -84,6 +91,7 @@ type ApplicationSummary struct {
 	Stack     int          `json:"stack"`
 }
 
+// Token is a detailed api representation
 type Token struct {
 	ID             string    `json:"id"`
 	URL            string    `json:"url"`
@@ -95,6 +103,7 @@ type Token struct {
 	LastUsedAt     time.Time `json:"lastUsedAt"`
 }
 
+// TokenSummary is a summary api representation
 type TokenSummary struct {
 	ID             string    `json:"id"`
 	URL            string    `json:"url"`
@@ -105,6 +114,7 @@ type TokenSummary struct {
 	LastUsedAt     time.Time `json:"lastUsedAt"`
 }
 
+// UnifiedUser is a flexible user representation. Not all fields have to be set
 type UnifiedUser struct {
 	Type   string             `json:"type"`
 	Name   string             `json:"name"`
@@ -113,10 +123,12 @@ type UnifiedUser struct {
 	Meta   *UnifiedUserMeta   `json:"meta"`
 }
 
+// UnifiedUserAvatar is the avatar property of the UnifiedUser
 type UnifiedUserAvatar struct {
 	Gravatar string `json:"gravatar"`
 }
 
+// UnifiedUserMeta is the meta property of the UnifiedUser
 type UnifiedUserMeta struct {
 	Username        string `json:"username"`
 	WerckerEmployee bool   `json:"werckerEmployee"`

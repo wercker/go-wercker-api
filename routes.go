@@ -3,7 +3,7 @@ package wercker
 import "github.com/jtacoma/uritemplates"
 
 // routes is a map containing all UriTemplates indexed by name.
-var routes map[string]*uritemplates.UriTemplate = make(map[string]*uritemplates.UriTemplate)
+var routes = make(map[string]*uritemplates.UriTemplate)
 
 func init() {
 	// Add templates to the route map

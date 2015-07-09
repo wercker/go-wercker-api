@@ -74,7 +74,7 @@ type Application struct {
 	Deploys   string       `json:"deploys"`
 	SCM       *SCM         `json:"scm"`
 	CreatedAt time.Time    `json:"createdAt"`
-	UpdatedAt string       `json:"updatedAt"`
+	UpdatedAt time.Time    `json:"updatedAt"`
 	Privacy   string       `json:"privacy"`
 	Stack     int          `json:"stack"`
 }
@@ -86,7 +86,7 @@ type ApplicationSummary struct {
 	Name      string       `json:"name"`
 	Owner     *UnifiedUser `json:"owner"`
 	CreatedAt time.Time    `json:"createdAt"`
-	UpdatedAt string       `json:"updatedAt"`
+	UpdatedAt time.Time    `json:"updatedAt"`
 	Privacy   string       `json:"privacy"`
 	Stack     int          `json:"stack"`
 }

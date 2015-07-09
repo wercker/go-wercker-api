@@ -12,25 +12,25 @@ var defaultCredentialsProvider = credentials.NewMultiProvider(
 )
 
 var defaultConfig = &Config{
-	Creds:      defaultCredentialsProvider,
-	Endpoint:   "https://app.wercker.com",
-	HTTPClient: http.DefaultClient,
+	Credentials: defaultCredentialsProvider,
+	Endpoint:    "https://app.wercker.com",
+	HTTPClient:  http.DefaultClient,
 }
 
 // Config contains all configurable settings which will be used when making
 // requests
 type Config struct {
-	Creds      credentials.Provider
-	Endpoint   string
-	HTTPClient *http.Client
+	Credentials credentials.Provider
+	Endpoint    string
+	HTTPClient  *http.Client
 }
 
 // Copy will create a shallow copy of the Copy object
 func (o *Config) Copy() *Config {
 	newConfig := &Config{
-		Creds:      o.Creds,
-		Endpoint:   o.Endpoint,
-		HTTPClient: o.HTTPClient,
+		Credentials: o.Credentials,
+		Endpoint:    o.Endpoint,
+		HTTPClient:  o.HTTPClient,
 	}
 	return newConfig
 }
@@ -44,8 +44,8 @@ func (o *Config) Merge(config *Config) *Config {
 
 	newConfig := o.Copy()
 
-	if config.Creds != nil {
-		newConfig.Creds = config.Creds
+	if config.Credentials != nil {
+		newConfig.Credentials = config.Credentials
 	}
 
 	if config.Endpoint != "" {

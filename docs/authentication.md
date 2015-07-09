@@ -5,9 +5,8 @@ username/password combination. The username/password combination however only
 works for a few endpoints. This is the reason why most Providers only return a
 token credential.
 
-By default this client tries to fetch the credentials from
-`~/.wercker/credentials`, the environment variable `$WERCKER_TOKEN` and falls
-back to anonymous user.
+By default this client tries to fetch the credentials from the environment
+variable `$WERCKER_TOKEN` and falls back to anonymous user.
 
 If you retrieved your wercker token through other means, then you can use the
 `credentials.Token` method to pass this value:
@@ -17,13 +16,13 @@ import "github.com/wercker/go-wercker-api"
 import "github.com/wercker/go-wercker-api/credentials"
 
 token := "... your token ..."
-options := wercker.Options{Creds: credentials.Token(token)}
+options := &wercker.Options{Credentials: credentials.Token(token)}
 client := wercker.NewClient(options)
 ```
 
 # credentials.Provider
 
-This client retrieves the token by using the
+This client retrieves credentials by using the
 [`Provider`](../credentials/provider.go) interface. This interface exposes a
 single function: `GetCredentials() (*Creds, error)`.
 

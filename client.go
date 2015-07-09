@@ -63,9 +63,9 @@ func (c *Client) MakeRequest(method string, path string, override *Config) ([]by
 		return nil, err
 	}
 
-	if config.Creds != nil {
+	if config.Credentials != nil {
 		// Add credentials
-		creds, err := config.Creds.GetCredentials()
+		creds, err := config.Credentials.GetCredentials()
 		if err != nil {
 			return nil, err
 		}

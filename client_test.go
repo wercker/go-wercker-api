@@ -59,7 +59,7 @@ func TestClientMakeRequestGET200Token(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	config := &Config{Endpoint: ts.URL, Creds: credentials.Token("secret_token")}
+	config := &Config{Endpoint: ts.URL, Credentials: credentials.Token("secret_token")}
 	client := NewClient(config)
 	body, err := client.MakeRequest("GET", "/", nil)
 
@@ -80,7 +80,7 @@ func TestClientMakeRequestGET200UsernamePassword(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	config := &Config{Endpoint: ts.URL, Creds: credentials.UsernamePassword("secret username", "secret password")}
+	config := &Config{Endpoint: ts.URL, Credentials: credentials.UsernamePassword("secret username", "secret password")}
 	client := NewClient(config)
 	body, err := client.MakeRequest("GET", "/", nil)
 

@@ -16,14 +16,14 @@ import "github.com/wercker/go-wercker-api"
 client := wercker.NewClient(nil)
 ```
 
-This will create a new client with the default settings. If you want to override
-the default behavious, then you need to create a `wercker.Options` object and
+This will create a new client with the default config. If you want to override
+the default config, then you need to create a `wercker.Config` object and
 pass this `wercker.NewClient`:
 
 ```golang
 import "github.com/wercker/go-wercker-api"
 
-options := &wercker.Options{}
+options := &wercker.Config{}
 client := wercker.NewClient(options)
 ```
 
@@ -37,13 +37,14 @@ uses the following strategy:
 - Fallback to anonymous user
 
 If you retrieved your wercker token through other means, then you can use the
-`credentials.Token` method to user a static `Provider`:
+`credentials.Token` method to create a static `Provider`:
 
 ```golang
 import "github.com/wercker/go-wercker-api"
+import "github.com/wercker/go-wercker-api/credentials"
 
 token := "... your token ..."
-options := wercker.Options{Creds: credentials.Token(token)}
+options := &wercker.Config{Credentials: credentials.Token(token)}
 client := wercker.NewClient(options)
 ```
 

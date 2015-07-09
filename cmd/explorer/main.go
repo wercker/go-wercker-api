@@ -148,11 +148,11 @@ func createClient(c *cli.Context) *wercker.Client {
 	}
 
 	if c.GlobalBool("anonymous") {
-		config.Creds = credentials.Anonymous()
+		config.Credentials = credentials.Anonymous()
 	} else {
 		token := c.GlobalString("token")
 		if token != "" {
-			config.Creds = credentials.Token(token)
+			config.Credentials = credentials.Token(token)
 		}
 	}
 

@@ -125,7 +125,7 @@ func wrapper(f func(c *cli.Context, client *wercker.Client) (interface{}, error)
 			os.Stderr.WriteString("Unable to fetch from the API: ")
 			os.Stderr.WriteString(err.Error())
 			os.Stderr.WriteString("\n")
-			return
+			os.Exit(1)
 		}
 
 		b, err := json.MarshalIndent(result, "", "  ")
@@ -133,7 +133,7 @@ func wrapper(f func(c *cli.Context, client *wercker.Client) (interface{}, error)
 			os.Stderr.WriteString("Unable to marshal response from the API: ")
 			os.Stderr.WriteString(err.Error())
 			os.Stderr.WriteString("\n")
-			return
+			os.Exit(2)
 		}
 
 		os.Stdout.Write(b)

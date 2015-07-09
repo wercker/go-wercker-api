@@ -157,7 +157,7 @@ func main() {
 	app.Author = "wercker"
 	app.Email = "pleasemailus@wercker.com"
 	app.Name = "api explorer"
-	app.Usage = "A new cli application"
+	app.Usage = "retrieve results from the wercker API"
 	app.Version = FullVersion()
 
 	app.Flags = []cli.Flag{

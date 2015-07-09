@@ -3,8 +3,9 @@ package wercker
 import "errors"
 
 func init() {
-	// Add templates to the route map
-	addURITemplate("tokens.GetToken", "")
+	addURITemplate("tokens.DeleteToken", "/api/v3/tokens/{tokenId}")
+	addURITemplate("tokens.FetchTokens", "/api/v3/tokens")
+	addURITemplate("tokens.GetToken", "/api/v3/tokens/{tokenId}")
 }
 
 type tokensService struct {
@@ -24,11 +25,22 @@ func (c *tokensService) Create(options *CreateTokenOptions) (*Token, error) {
 // GetTokenOptions are the options associated with tokensService.Get
 type GetTokenOptions struct {
 	Config *Config
+
+	TokenID string `map:"tokenId"`
 }
 
 // Get a single Token.
 func (c *tokensService) Get(options *GetTokenOptions) (*Token, error) {
-	return nil, errors.New("not implemented")
+	method := "GET"
+	template := routes["tokens.GetToken"]
+
+	result := &Token{}
+	err := c.client.makeRequest(method, template, options, nil, nil, options.Config, result)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // FetchTokenOptions are the options associated with tokensService.Fetch
@@ -37,8 +49,17 @@ type FetchTokenOptions struct {
 }
 
 // Fetch multiple Tokens.
-func (c *tokensService) Fetch(options *FetchTokenOptions) ([]*Token, error) {
-	return nil, errors.New("not implemented")
+func (c *tokensService) Fetch(options *FetchTokenOptions) ([]*TokenSummary, error) {
+	method := "GET"
+	template := routes["tokens.FetchTokens"]
+
+	result := []*TokenSummary{}
+	err := c.client.makeRequest(method, template, options, nil, nil, options.Config, &result)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // UpdateTokenOptions are the options associated with tokensService.Update
@@ -54,9 +75,15 @@ func (c *tokensService) Update(options *UpdateTokenOptions) (*Token, error) {
 // DeleteTokenOptions are the options associated with tokensService.Delete
 type DeleteTokenOptions struct {
 	Config *Config
+
+	TokenID string `map:"tokenId"`
 }
 
 // Delete a token
 func (c *tokensService) Delete(options *DeleteTokenOptions) error {
-	return errors.New("not implemented")
+	method := "DELETE"
+	template := routes["tokens.DeleteToken"]
+
+	err := c.client.makeRequest(method, template, options, nil, nil, options.Config, nil)
+	return err
 }

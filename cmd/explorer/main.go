@@ -12,12 +12,51 @@ import (
 )
 
 var (
+	tokensCommand = cli.Command{
+		Name:  "tokens",
+		Usage: "tokens related endpoints",
+		Subcommands: []cli.Command{
+			cli.Command{
+				Name:  "fetch",
+				Usage: "retrieve all tokens for the current user",
+				Action: wrapper(func(c *cli.Context, client *wercker.Client) (interface{}, error) {
+					fetchTokensOptions := &wercker.FetchTokenOptions{}
+					return client.Tokens.Fetch(fetchTokensOptions)
+				}),
+			},
+			cli.Command{
+				Name:  "get",
+				Usage: "retrieve a single token",
+				Action: wrapper(func(c *cli.Context, client *wercker.Client) (interface{}, error) {
+					tokenID := c.Args().First()
+					if tokenID == "" {
+						return nil, fmt.Errorf("token id is required as an argument")
+					}
+					getTokenOptions := &wercker.GetTokenOptions{TokenID: tokenID}
+					return client.Tokens.Get(getTokenOptions)
+				}),
+			},
+			cli.Command{
+				Name:  "delete",
+				Usage: "delete a single token",
+				Action: wrapper(func(c *cli.Context, client *wercker.Client) (interface{}, error) {
+					tokenID := c.Args().First()
+					if tokenID == "" {
+						return nil, fmt.Errorf("token id is required as an argument")
+					}
+					deleteTokenOptions := &wercker.DeleteTokenOptions{TokenID: tokenID}
+					return nil, client.Tokens.Delete(deleteTokenOptions)
+				}),
+			},
+		},
+	}
+
 	buildsCommand = cli.Command{
 		Name:  "builds",
 		Usage: "build related endpoints",
 		Subcommands: []cli.Command{
 			cli.Command{
-				Name:  "fetch",
+				Name:  "get",
 				Usage: "retrieve a single build",
 				Action: wrapper(func(c *cli.Context, client *wercker.Client) (interface{}, error) {
 					buildID := c.Args().First()
@@ -39,7 +78,7 @@ var (
 		Usage: "application related endpoints",
 		Subcommands: []cli.Command{
 			cli.Command{
-				Name:  "fetch",
+				Name:  "get",
 				Usage: "retrieve a single application",
 				Action: wrapper(func(c *cli.Context, client *wercker.Client) (interface{}, error) {
 					owner := c.Args().First()
@@ -128,6 +167,10 @@ func wrapper(f func(c *cli.Context, client *wercker.Client) (interface{}, error)
 			os.Exit(1)
 		}
 
+		if result == nil {
+			return
+		}
+
 		b, err := json.MarshalIndent(result, "", "  ")
 		if err != nil {
 			os.Stderr.WriteString("Unable to marshal response from the API: ")
@@ -166,7 +209,7 @@ func main() {
 
 	app.Author = "wercker"
 	app.Email = "pleasemailus@wercker.com"
-	app.Name = "api explorer"
+	app.Name = "explorer"
 	app.Usage = "retrieve results from the wercker API"
 	app.Version = FullVersion()
 
@@ -190,6 +233,7 @@ func main() {
 	app.Commands = []cli.Command{
 		applicationsCommand,
 		buildsCommand,
+		tokensCommand,
 	}
 
 	app.Run(os.Args)

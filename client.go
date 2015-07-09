@@ -137,9 +137,11 @@ func (c *Client) makeRequest(method string, template *uritemplates.UriTemplate, 
 		return err
 	}
 
-	err = json.Unmarshal(body, result)
-	if err != nil {
-		return err
+	if len(body) > 0 {
+		err = json.Unmarshal(body, result)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

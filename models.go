@@ -93,25 +93,25 @@ type ApplicationSummary struct {
 
 // Token is a detailed api representation
 type Token struct {
-	ID             string    `json:"id"`
-	URL            string    `json:"url"`
-	Name           string    `json:"name"`
-	Token          string    `json:"token"`
-	HashedToken    string    `json:"hashedToken"`
-	LastCharacters string    `json:"lastCharacters"`
-	CreatedAt      time.Time `json:"createdAt"`
-	LastUsedAt     time.Time `json:"lastUsedAt"`
+	ID             string     `json:"id"`
+	URL            string     `json:"url"`
+	Name           string     `json:"name"`
+	Token          string     `json:"token"`
+	HashedToken    string     `json:"hashedToken"`
+	LastCharacters string     `json:"lastCharacters"`
+	CreatedAt      *time.Time `json:"createdAt"`
+	LastUsedAt     *time.Time `json:"lastUsedAt"`
 }
 
 // TokenSummary is a summary api representation
 type TokenSummary struct {
-	ID             string    `json:"id"`
-	URL            string    `json:"url"`
-	Name           string    `json:"name"`
-	HashedToken    string    `json:"hashedToken"`
-	LastCharacters string    `json:"lastCharacters"`
-	CreatedAt      time.Time `json:"createdAt"`
-	LastUsedAt     time.Time `json:"lastUsedAt"`
+	ID             string     `json:"id"`
+	URL            string     `json:"url"`
+	Name           string     `json:"name"`
+	HashedToken    string     `json:"hashedToken"`
+	LastCharacters string     `json:"lastCharacters"`
+	CreatedAt      *time.Time `json:"createdAt"`
+	LastUsedAt     *time.Time `json:"lastUsedAt"`
 }
 
 // UnifiedUser is a flexible user representation. Not all fields have to be set

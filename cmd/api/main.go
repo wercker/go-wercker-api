@@ -28,7 +28,7 @@ var (
 						BuildID: buildID,
 					}
 
-					return client.GetBuild(getBuildOptions)
+					return client.Builds.Get(getBuildOptions)
 				}),
 			},
 		},
@@ -62,7 +62,7 @@ var (
 						Name:  name,
 					}
 
-					return client.GetApplication(getApplicationOptions)
+					return client.Applications.Get(getApplicationOptions)
 				}),
 			},
 			cli.Command{
@@ -95,7 +95,7 @@ var (
 						name = s[1]
 					}
 
-					fetchApplicationBuildsOptions := &wercker.FetchApplicationBuildsOptions{
+					fetchForApplicationOptions := &wercker.FetchForApplicationOptions{
 						Owner:  owner,
 						Name:   name,
 						Branch: c.String("branch"),
@@ -108,7 +108,7 @@ var (
 						Status: c.String("status"),
 					}
 
-					return client.FetchApplicationBuilds(fetchApplicationBuildsOptions)
+					return client.Builds.FetchForApplication(fetchForApplicationOptions)
 				}),
 			},
 		},

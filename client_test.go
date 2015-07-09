@@ -23,9 +23,9 @@ func TestClientMakeRequestGET400(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	options := &Options{Endpoint: ts.URL}
-	client := NewClient(options)
-	_, err := client.MakeRequest("GET", "/")
+	config := &Config{Endpoint: ts.URL}
+	client := NewClient(config)
+	_, err := client.MakeRequest("GET", "/", nil)
 
 	require.Error(t, err, "")
 	assert.Equal(t, "result must be one of aborted, unknown, passed, failed", err.Error(), "")
@@ -39,9 +39,9 @@ func TestClientMakeRequestGET200Anon(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	options := &Options{Endpoint: ts.URL}
-	client := NewClient(options)
-	body, err := client.MakeRequest("GET", "/")
+	config := &Config{Endpoint: ts.URL}
+	client := NewClient(config)
+	body, err := client.MakeRequest("GET", "/", nil)
 
 	require.NoError(t, err, "")
 	assert.Equal(t, result, body, "")
@@ -59,9 +59,9 @@ func TestClientMakeRequestGET200Token(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	options := &Options{Endpoint: ts.URL, Creds: credentials.Token("secret_token")}
-	client := NewClient(options)
-	body, err := client.MakeRequest("GET", "/")
+	config := &Config{Endpoint: ts.URL, Creds: credentials.Token("secret_token")}
+	client := NewClient(config)
+	body, err := client.MakeRequest("GET", "/", nil)
 
 	require.NoError(t, err, "")
 	assert.True(t, tokenSet, "")
@@ -80,9 +80,9 @@ func TestClientMakeRequestGET200UsernamePassword(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	options := &Options{Endpoint: ts.URL, Creds: credentials.UsernamePassword("secret username", "secret password")}
-	client := NewClient(options)
-	body, err := client.MakeRequest("GET", "/")
+	config := &Config{Endpoint: ts.URL, Creds: credentials.UsernamePassword("secret username", "secret password")}
+	client := NewClient(config)
+	body, err := client.MakeRequest("GET", "/", nil)
 
 	require.NoError(t, err, "")
 	assert.True(t, authSet, "")

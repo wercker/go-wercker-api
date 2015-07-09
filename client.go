@@ -12,13 +12,22 @@ import (
 )
 
 func NewClient(config *Config) *Client {
-	return &Client{
+	c := &Client{
 		config: defaultConfig.Merge(config),
 	}
+
+	c.Applications = &applicationsService{client: c}
+	c.Builds = &buildsService{client: c}
+	c.Tokens = &tokensService{client: c}
+
+	return c
 }
 
 type Client struct {
-	config *Config
+	config       *Config
+	Applications *applicationsService
+	Builds       *buildsService
+	Tokens       *tokensService
 }
 
 type ErrResponse struct {
@@ -31,24 +40,24 @@ func (e *ErrResponse) Error() string {
 	return e.Message
 }
 
-func (c *Client) generateUrl(path string) string {
-	endpoint := strings.TrimRight(c.config.Endpoint, "/")
+func generateUrl(path string, config *Config) string {
+	endpoint := strings.TrimRight(config.Endpoint, "/")
 	return endpoint + path
 }
 
-func (c *Client) MakeRequest(method string, path string) ([]byte, error) {
-	client := http.DefaultClient
+func (c *Client) MakeRequest(method string, path string, override *Config) ([]byte, error) {
+	config := c.config.Merge(override)
 
-	url := c.generateUrl(path)
+	url := generateUrl(path, config)
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	if c.config.Creds != nil {
+	if config.Creds != nil {
 		// Add credentials
-		creds, err := c.config.Creds.GetCredentials()
+		creds, err := config.Creds.GetCredentials()
 		if err != nil {
 			return nil, err
 		}
@@ -62,7 +71,7 @@ func (c *Client) MakeRequest(method string, path string) ([]byte, error) {
 		}
 	}
 
-	resp, err := client.Do(req)
+	resp, err := config.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +113,7 @@ func (c *Client) handleError(resp *http.Response) error {
 	return errors.New("Invalid status code received")
 }
 
-func (c *Client) makeRequest(method string, template *uritemplates.UriTemplate, urlModel interface{}, payload interface{}, headers map[string]string, config *Config, result interface{}) error {
+func (c *Client) makeRequest(method string, template *uritemplates.UriTemplate, urlModel interface{}, payload interface{}, headers map[string]string, override *Config, result interface{}) error {
 	m, ok := struct2map(urlModel)
 	if !ok {
 		return errors.New("Invalid URL model")
@@ -115,7 +124,7 @@ func (c *Client) makeRequest(method string, template *uritemplates.UriTemplate, 
 		return err
 	}
 
-	body, err := c.MakeRequest(method, path)
+	body, err := c.MakeRequest(method, path, override)
 	if err != nil {
 		return err
 	}

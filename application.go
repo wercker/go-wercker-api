@@ -33,6 +33,7 @@ func (c *Client) GetApplication(options *GetApplicationOptions) (*Application, e
 
 // GetApplicationsOptions are the options associated with Client.GetApplications
 type GetApplicationsOptions struct {
+	Owner string `map:"owner"`
 	Limit string `map:"limit,omitempty"`
 	Skip  int    `map:"skip,omitempty"`
 	Sort  int    `map:"sort,omitempty"`

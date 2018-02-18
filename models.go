@@ -143,21 +143,21 @@ type UnifiedUserMeta struct {
 
 // Run is a detailed api representation
 type Run struct {
-	ID         string       `json:"id"`
-	URL        string       `json:"url"`
-	Branch     string       `json:"branch"`
-	CommitHash string       `json:"commitHash"`
-	CreatedAt  time.Time    `json:"createdAt"`
-	EnvVars    []RunEnvVar  `json:"envVars"`
-	FinishedAt time.Time    `json:"finishedAt"`
-	Message    string       `json:"message"`
-	Commits    []string     `json:"commits"`
-	Progress   int          `json:"progress"`
-	Result     string       `json:"result"`
-	StartedAt  time.Time    `json:"startedAt"`
-	Status     string       `json:"status"`
-	User       *UnifiedUser `json:"user"`
-	Pipeline   *RunPipeline `json:"pipeline"`
+	ID         string           `json:"id"`
+	URL        string           `json:"url"`
+	Branch     string           `json:"branch"`
+	CommitHash string           `json:"commitHash"`
+	CreatedAt  time.Time        `json:"createdAt"`
+	EnvVars    []RunEnvVar      `json:"envVars"`
+	FinishedAt time.Time        `json:"finishedAt"`
+	Message    string           `json:"message"`
+	Commits    []string         `json:"commits"`
+	Progress   int              `json:"progress"`
+	Result     string           `json:"result"`
+	StartedAt  time.Time        `json:"startedAt"`
+	Status     string           `json:"status"`
+	User       *UnifiedUser     `json:"user"`
+	Pipeline   *PipelineSummary `json:"pipeline"`
 }
 
 // RunEnvVar is the EnvVar property of the Run
@@ -166,23 +166,23 @@ type RunEnvVar struct {
 
 // RunSummary is a summary api representation
 type RunSummary struct {
-	ID         string       `json:"id"`
-	URL        string       `json:"url"`
-	Branch     string       `json:"branch"`
-	CommitHash string       `json:"commitHash"`
-	CreatedAt  time.Time    `json:"createdAt"`
-	FinishedAt time.Time    `json:"finishedAt"`
-	Message    string       `json:"message"`
-	Progress   int          `json:"progress"`
-	Result     string       `json:"result"`
-	StartedAt  time.Time    `json:"startedAt"`
-	Status     string       `json:"status"`
-	User       *UnifiedUser `json:"user"`
-	Pipeline   *RunPipeline `json:"pipeline"`
+	ID         string           `json:"id"`
+	URL        string           `json:"url"`
+	Branch     string           `json:"branch"`
+	CommitHash string           `json:"commitHash"`
+	CreatedAt  time.Time        `json:"createdAt"`
+	FinishedAt time.Time        `json:"finishedAt"`
+	Message    string           `json:"message"`
+	Progress   int              `json:"progress"`
+	Result     string           `json:"result"`
+	StartedAt  time.Time        `json:"startedAt"`
+	Status     string           `json:"status"`
+	User       *UnifiedUser     `json:"user"`
+	Pipeline   *PipelineSummary `json:"pipeline"`
 }
 
-// RunPipeline is the pipeline property of the Run
-type RunPipeline struct {
+// PipelineSummary is a summary api representation
+type PipelineSummary struct {
 	ID                   string    `json:"id"`
 	URL                  string    `json:"url"`
 	CreatedAt            time.Time `json:"createdAt"`
@@ -191,4 +191,18 @@ type RunPipeline struct {
 	PipelineName         string    `json:"pipelineName"`
 	SetScmProviderStatus bool      `json:"setScmProviderStatus"`
 	Type                 string    `json:"type"`
+}
+
+// Pipeline is a detailed api representation
+type Pipeline struct {
+	ID                   string              `json:"id"`
+	URL                  string              `json:"url"`
+	CreatedAt            time.Time           `json:"createdAt"`
+	Name                 string              `json:"name"`
+	Permissions          string              `json:"permissions"`
+	PipelineName         string              `json:"pipelineName"`
+	SetScmProviderStatus bool                `json:"setScmProviderStatus"`
+	Type                 string              `json:"type"`
+	AllowedActions       []string            `json:"allowedActions"`
+	Application          *ApplicationSummary `json:"application"`
 }

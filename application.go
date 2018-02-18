@@ -32,7 +32,7 @@ func (c *Client) GetApplication(options *GetApplicationOptions) (*Application, e
 
 // GetApplicationsOptions are the options associated with Client.GetApplications
 type GetApplicationsOptions struct {
-	Limit string `map:"limit,omitempty"`
+	Limit int    `map:"limit,omitempty"`
 	Skip  int    `map:"skip,omitempty"`
 	Sort  int    `map:"sort,omitempty"`
 	Stack string `map:"stack,omitempty"`

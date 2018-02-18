@@ -7,6 +7,7 @@ var applicationTemplates = make(map[string]*uritemplates.UriTemplate)
 
 func init() {
 	addURITemplate(applicationTemplates, "GetApplication", "/api/v3/applications{/owner,name}")
+	addURITemplate(applicationTemplates, "GetApplications", "/api/v3/applications{/owner}")
 }
 
 // GetApplicationOptions are the options associated with Client.GetApplication
